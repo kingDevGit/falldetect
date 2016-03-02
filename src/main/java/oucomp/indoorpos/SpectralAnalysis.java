@@ -8,14 +8,14 @@ import org.apache.commons.math3.transform.DftNormalization;
 import org.apache.commons.math3.transform.FastFourierTransformer;
 import org.apache.commons.math3.transform.TransformType;
 
-public class SpectralAnalyzerCommons {
+public class SpectralAnalysis {
 
   protected final static FastFourierTransformer transformer = new FastFourierTransformer(DftNormalization.STANDARD);
   protected double spikeThreshold = 1.0;
   protected LinkedHashMap<Double, Double> spikeMap = null;
   protected double spectrum[][] = null;
 
-  public SpectralAnalyzerCommons(double signal[], int len, double sampleRate) {
+  public SpectralAnalysis(double signal[], int len, double sampleRate) {
     this.spectrum = generateSpectrum(signal, len, sampleRate);
     this.spikeMap = generateSpikes(this.spectrum, spikeThreshold);
   }
@@ -25,6 +25,7 @@ public class SpectralAnalyzerCommons {
       return null;
     }
     signal = trimmingToPower2(signal, len);
+    len = signal.length;
     Complex[] complex = transformer.transform(signal, TransformType.FORWARD);
     double real;
     double im;
@@ -43,6 +44,10 @@ public class SpectralAnalyzerCommons {
 
   public double[][] getSpectrum() {
     return spectrum;
+  }
+
+  public LinkedHashMap<Double, Double> getSpikeMap() {
+    return spikeMap;
   }
 
   private static double[] paddingToPower2(double signal[], int len) {
@@ -97,7 +102,7 @@ public class SpectralAnalyzerCommons {
 
   public static void main(String args[]) throws Exception {
     double signal[] = generateSignal(30);
-    SpectralAnalyzerCommons spectralAnalyzer = new SpectralAnalyzerCommons(signal, signal.length, 30.0);
+    SpectralAnalysis spectralAnalyzer = new SpectralAnalysis(signal, signal.length, 30.0);
     spectralAnalyzer.printSpikes();
   }
 }

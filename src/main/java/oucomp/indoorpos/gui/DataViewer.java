@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.ListModel;
 import oucomp.indoorpos.AccelDatasetModel;
 import oucomp.indoorpos.AccelRecord;
-import oucomp.indoorpos.SpectralAnalyzerCommons;
+import oucomp.indoorpos.SpectralAnalysis;
 import oucomp.indoorpos.DataAnalysis;
 
 public class DataViewer extends javax.swing.JFrame {
@@ -173,12 +173,12 @@ public class DataViewer extends javax.swing.JFrame {
     AccelRecord record = list.get(index);
     plotRecordPanel1.setAccelRecord(record);
     // update spectral panel
-    SpectralAnalyzerCommons spectralData;
+    SpectralAnalysis spectralData;
     if (!record.containExtra("SPECTRAL")) {
-      spectralData = new SpectralAnalyzerCommons(record.getRMSArray(), record.getSampleCount(), record.getSampleRate());
+      spectralData = new SpectralAnalysis(record.getRMSArray(), record.getSampleCount(), record.getSampleRate());
       record.putExtra("SEPCTRAL", spectralData);
     } else {
-      spectralData = (SpectralAnalyzerCommons) record.getExtra("SPECTRAL");
+      spectralData = (SpectralAnalysis) record.getExtra("SPECTRAL");
     }
     double freqSpectrum[][] = spectralData.getSpectrum();
     spectrumPanel1.setData(freqSpectrum);

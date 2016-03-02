@@ -10,32 +10,6 @@ import weka.core.Instances;
 
 public class WekaHelper {
 
-  public static Instances createInstancesWithMeta(String classLabelArray[], int featureCount) {
-    FastVector atts = new FastVector();
-    FastVector catAttribute = new FastVector(); // define the class attribute
-    for (String c : classLabelArray) {
-      catAttribute.addElement(c);
-    }
-    atts.addElement(new Attribute("Class", catAttribute));
-    for (int i = 0; i < featureCount; i++) {
-      atts.addElement(new Attribute("Feature #" + i));
-    }
-    Instances dataSet = new Instances("Fall-Detect", atts, 0);
-    dataSet.setClassIndex(0);
-    return dataSet;
-  }
-
-  public static Instances createInstances(Instances dataset) {
-    FastVector atts = new FastVector();
-    int num = dataset.numAttributes();
-    for (int i = 0; i < num; i++) {
-      atts.addElement(dataset.attribute(i));
-    }
-    Instances dataSet = new Instances("Fall-Detect", atts, 0);
-    dataSet.setClassIndex(0);
-    return dataSet;
-  }
-
   public static Evaluation runTrainTestSplit(Instances dataset, Classifier classifier, double trainPart) throws Exception {
     int numInstances = dataset.numInstances();
     Instances randData = new Instances(dataset);
