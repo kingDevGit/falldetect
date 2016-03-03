@@ -7,6 +7,8 @@ public class DataAnalysis {
   private double skewness; // sample skewness
   private double max;
   private double min;
+  private int maxIndex;
+  private int minIndex;
 
   public DataAnalysis(double data[]) {
     findBasicStat(data);
@@ -18,9 +20,11 @@ public class DataAnalysis {
       sum += data[i];
       if (i == 0 || data[i] > max) {
         max = data[i];
+        maxIndex = i;
       }
       if (i == 0 || data[i] < min) {
         min = data[i];
+        minIndex = i;
       }
     }
     mean = sum / data.length;
@@ -54,13 +58,21 @@ public class DataAnalysis {
     return min;
   }
 
+  public int getMaxIndex() {
+    return maxIndex;
+  }
+
+  public int getMinIndex() {
+    return minIndex;
+  }
+
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("MEAN: ").append(mean).append('\n');
     sb.append("VARIANCE: ").append(variance).append('\n');
     sb.append("SKEWNESS: ").append(skewness).append('\n');
-    sb.append("MAX: ").append(max).append('\n');
-    sb.append("MIN: ").append(min).append('\n');
+    sb.append("MAX: ").append(max).append(" (").append(maxIndex).append(")\n");
+    sb.append("MIN: ").append(min).append(" (").append(minIndex).append(")\n");
     return sb.toString();
   }
 }

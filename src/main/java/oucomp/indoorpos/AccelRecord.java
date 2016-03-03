@@ -69,6 +69,8 @@ public class AccelRecord {
               + sample[i][2] * sample[i][2]) / 9.8;
       //System.out.print(rms[i] + " ");
     }
+    // apply low pass filter
+    rms = DataHelper.lowPass(rms, 20);
   }
 
   public double[] getRMSArray() {

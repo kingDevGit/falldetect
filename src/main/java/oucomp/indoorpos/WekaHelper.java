@@ -4,7 +4,6 @@ import java.util.Random;
 import weka.attributeSelection.PrincipalComponents;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
-import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instances;
 
@@ -43,16 +42,15 @@ public class WekaHelper {
   }
 
   public static Evaluation run10FoldedTest(Instances dataset, Classifier classifier) throws Exception {
-    /*
-     Instances randData = new Instances(dataset);
-     randData.randomize(new Random(10));
-     randData.stratify(10);
-     randData.setClassIndex(2);
-     */
-    Evaluation eval = new Evaluation(dataset);
-    classifier.buildClassifier(dataset);
+
+    Instances randset = new Instances(dataset);
+    //randset.randomize(new Random(10));
+    //randset.stratify(10);
+    //printInstances(randset);
+    Evaluation eval = new Evaluation(randset);
+    classifier.buildClassifier(randset);
     System.out.println(classifier);
-    eval.crossValidateModel(classifier, dataset, 2, new Random(10));
+    eval.crossValidateModel(classifier, randset, 10, new Random(10));
     return eval;
   }
 
@@ -73,6 +71,7 @@ public class WekaHelper {
     System.out.println("False Negatives : " + eval.numFalseNegatives(1) + "   " + eval.falseNegativeRate(1) * 100 + "%");
     System.out.println("Precision       : " + eval.precision(1));
     System.out.println("Recall          : " + eval.recall(1));
+    System.out.println(eval.toMatrixString());
   }
 
   public static void printPCA(Instances dataset) {
@@ -84,4 +83,20 @@ public class WekaHelper {
       ex.printStackTrace(System.err);
     }
   }
+  
+  public static void printAttributes(Instances dataset) {
+    int num = dataset.numAttributes();
+    System.out.println("Number of attributes: " + num);
+    for (int i=0; i<num; i++) {
+      System.out.println(i + ": " + dataset.attribute(i).toString());
+    }
+  }
+  
+  public static void printInstances(Instances dataset) {
+    int num = dataset.numInstances();
+    System.out.println("Number of instances: " + num);
+    for (int i=0; i<num; i++) {
+      System.out.println(i + ": " + dataset.instance(i).toString());
+    }
+  }  
 }
