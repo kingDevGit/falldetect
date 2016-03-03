@@ -2,13 +2,14 @@ package oucomp.indoorpos;
 
 public class DataAnalysis {
 
-  private double mean;
-  private double variance;
-  private double skewness; // sample skewness
-  private double max;
-  private double min;
-  private int maxIndex;
-  private int minIndex;
+  protected double mean;
+  protected double variance;
+  protected double sd;
+  protected double skewness; // sample skewness
+  protected double max;
+  protected double min;
+  protected int maxIndex;
+  protected int minIndex;
 
   public DataAnalysis(double data[]) {
     findBasicStat(data);
@@ -35,6 +36,7 @@ public class DataAnalysis {
       m3 += Math.pow(data[i] - mean, 3);
     }
     variance = sum / data.length;
+    sd = Math.sqrt(variance);
     skewness = (m3 / data.length) / Math.pow(variance, 1.5);
   }
 
@@ -46,6 +48,10 @@ public class DataAnalysis {
     return variance;
   }
 
+  public double getSd() {
+    return sd;
+  }
+  
   public double getSkewness() {
     return skewness;
   }
@@ -70,6 +76,7 @@ public class DataAnalysis {
     StringBuilder sb = new StringBuilder();
     sb.append("MEAN: ").append(mean).append('\n');
     sb.append("VARIANCE: ").append(variance).append('\n');
+    sb.append("SD: ").append(sd).append('\n');    
     sb.append("SKEWNESS: ").append(skewness).append('\n');
     sb.append("MAX: ").append(max).append(" (").append(maxIndex).append(")\n");
     sb.append("MIN: ").append(min).append(" (").append(minIndex).append(")\n");

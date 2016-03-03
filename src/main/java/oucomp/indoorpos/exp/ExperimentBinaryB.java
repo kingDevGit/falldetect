@@ -61,9 +61,9 @@ public class ExperimentBinaryB {
       System.err.println(ex);
       System.exit(1);
     }
-    Instances dataModel = FeatureSetHelper.createDataModel("IndoorPos", new String[]{"down", "standstill"}, BasicFeatureSetSpectral.class);
+    Instances dataModel = FeatureSetHelper.createDataModel("IndoorPos", new String[]{"down", "up"}, BasicFeatureSetSpectral.class);
     List<BasicFeatureSet> fsAll = createFeatureSetFromData("down", model.getAccelRecordList("ElevatorDown"));
-    fsAll.addAll(createFeatureSetFromData("standstill", model.getAccelRecordList("StandStill")));
+    fsAll.addAll(createFeatureSetFromData("up", model.getAccelRecordList("ElevatorUp")));
     Instances instances = FeatureSetHelper.convertToInstances(dataModel, fsAll);
 
     // start training

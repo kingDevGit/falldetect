@@ -16,7 +16,7 @@ import weka.classifiers.Evaluation;
 import weka.classifiers.trees.J48;
 import weka.core.Instances;
 
-public class ExperimentMultiA {
+public class ExperimentBinaryC {
 
   private static AccelDatasetModel model;
 
@@ -30,9 +30,6 @@ public class ExperimentMultiA {
     fs.mean = da.getMean();
     fs.skewness = da.getSkewness();
     fs.variance = da.getVariance();
-    fs.maxbeforemin = 1;
-    if (da.getMinIndex() < da.getMaxIndex())
-      fs.maxbeforemin = 0;
 
     fs.peak05spec = 0;
     SpectralAnalysis sa = new SpectralAnalysis(rec.getRMSArray(), rec.getSampleCount(), rec.getSampleRate());
@@ -42,12 +39,12 @@ public class ExperimentMultiA {
       Double strength = spikeMap.get(freq);
       if (freq > 0.5)
         break;
-      if (freq >= 0.1 && freq < 0.5 && strength > 6 && strength < 30) {
+      if (freq > 0.1 && freq < 0.5 && strength > 15 && strength < 30) {
          fs.peak05spec = 1;
          break;
       }
     }
-        fs.maxbeforemin = 1; // true: high peak before low peak
+    fs.maxbeforemin = 1; // true: high peak before low peak
     List<Peak> highpeak = da.getHighPeakList();
     List<Peak> lowpeak = da.getLowPeakList();
     if (highpeak.size() == 1 && lowpeak.size() == 1) {
@@ -60,11 +57,12 @@ public class ExperimentMultiA {
     } else {
       fs.twopeaks = 0;
     }
+    
     return fs;
   }
 
-  private static List<BasicFeatureSet> createFeatureSetFromData(String classLabel, List<AccelRecord> recList) {
-    List<BasicFeatureSet> result = new ArrayList();
+  private static List<BasicFeatureSetSpectral> createFeatureSetFromData(String classLabel, List<AccelRecord> recList) {
+    List<BasicFeatureSetSpectral> result = new ArrayList();
     for (AccelRecord rec : recList) {
       result.add(createFeatureFromData(classLabel, rec));
     }
@@ -78,20 +76,19 @@ public class ExperimentMultiA {
       System.err.println(ex);
       System.exit(1);
     }
-    Instances dataModel = FeatureSetHelper.createDataModel("IndoorPos", new String[]{"up", "down", "standstill"}, BasicFeatureSetSpectral.class);
-    List<BasicFeatureSet> fsAll = createFeatureSetFromData("up", model.getAccelRecordList("ElevatorUp"));
-    fsAll.addAll(createFeatureSetFromData("down", model.getAccelRecordList("ElevatorDown")));
-    fsAll.addAll(createFeatureSetFromData("standstill", model.getAccelRecordList("StandStill")));
+    Instances dataModel = FeatureSetHelper.createDataModel("IndoorPos", new String[]{"down", "up"}, BasicFeatureSetSpectral.class);
+    List<BasicFeatureSetSpectral> fsAll = createFeatureSetFromData("down", model.getAccelRecordList("ElevatorDown"));
+    fsAll.addAll(createFeatureSetFromData("up", model.getAccelRecordList("ElevatorUp")));
     Instances instances = FeatureSetHelper.convertToInstances(dataModel, fsAll);
-    
-    WekaHelper.printAttributes(dataModel);
-    WekaHelper.printInstances(dataModel);
+
     // start training
     Classifier classifier = new J48();
     //Classifier classifier = new SMO();
     //Evaluation evaluation = WekaHelper.runTrainSetOnly(instances, classifier);
     //Evaluation evaluation = WekaHelper.runTrainTestSplit(instances, classifier, 0.5);
     Evaluation evaluation = WekaHelper.run10FoldedTest(instances, classifier);
+    
+    
     WekaHelper.printEvaluation(evaluation);
     WekaHelper.printPCA(instances);
   }

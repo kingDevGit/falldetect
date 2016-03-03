@@ -70,7 +70,7 @@ public class AccelRecord {
       //System.out.print(rms[i] + " ");
     }
     // apply low pass filter
-    rms = DataHelper.lowPass(rms, 20);
+    //rms = DataHelper.lowPass(rms, 20);
   }
 
   public double[] getRMSArray() {

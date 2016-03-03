@@ -22,7 +22,7 @@ public class ExperimentBinaryA {
     rec.putExtra("SIMPLEDA", da);
 
     BasicFeatureSet fs = new BasicFeatureSet(classLabel);
-    fs.max = da.getMin();
+    fs.max = da.getMax();
     fs.min = da.getMin();
     fs.mean = da.getMean();
     fs.skewness = da.getSkewness();
@@ -45,9 +45,12 @@ public class ExperimentBinaryA {
       System.err.println(ex);
       System.exit(1);
     }
-    Instances dataModel = FeatureSetHelper.createDataModel("IndoorPos", new String[]{"down", "up"}, BasicFeatureSet.class);
-    List<BasicFeatureSet> fsAll = createFeatureSetFromData("down", model.getAccelRecordList("StairDown"));
-    fsAll.addAll(createFeatureSetFromData("up", model.getAccelRecordList("StairUp")));
+    Instances dataModel = FeatureSetHelper.createDataModel("IndoorPos", new String[]{"push", "pull"}, BasicFeatureSet.class);
+    
+    
+    List<BasicFeatureSet> fsAll = createFeatureSetFromData("push", model.getAccelRecordList("DoorPush"));
+    fsAll.addAll(createFeatureSetFromData("pull", model.getAccelRecordList("DoorPull")));
+    
     Instances instances = FeatureSetHelper.convertToInstances(dataModel, fsAll);
 
     // start training

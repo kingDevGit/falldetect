@@ -15,7 +15,7 @@ import javax.swing.ListModel;
 import oucomp.indoorpos.AccelDatasetModel;
 import oucomp.indoorpos.AccelRecord;
 import oucomp.indoorpos.SpectralAnalysis;
-import oucomp.indoorpos.DataAnalysis;
+import oucomp.indoorpos.DataPeakAnalysis;
 
 public class DataViewer extends javax.swing.JFrame {
 
@@ -183,12 +183,12 @@ public class DataViewer extends javax.swing.JFrame {
     double freqSpectrum[][] = spectralData.getSpectrum();
     spectrumPanel1.setData(freqSpectrum);
     // update data analysis panel
-    DataAnalysis stat;
+    DataPeakAnalysis stat;
     if (!record.containExtra("SIMPLEDA")) {
-      stat = new DataAnalysis(record.getRMSArray());
+      stat = new DataPeakAnalysis(record.getRMSArray());
       record.putExtra("SIMPLEDA", stat);
     } else {
-      stat = (DataAnalysis) record.getExtra("SIMPLEDA");
+      stat = (DataPeakAnalysis) record.getExtra("SIMPLEDA");
     }
     jTextArea1.setText(stat.toString());
   }//GEN-LAST:event_jList1ValueChanged
