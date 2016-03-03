@@ -22,7 +22,7 @@ public class ExperimentBinaryA {
     rec.putExtra("SIMPLEDA", da);
 
     BasicFeatureSet fs = new BasicFeatureSet(classLabel);
-    fs.max = da.getMin();
+    fs.max = da.getMax();
     fs.min = da.getMin();
     fs.mean = da.getMean();
     fs.skewness = da.getSkewness();
