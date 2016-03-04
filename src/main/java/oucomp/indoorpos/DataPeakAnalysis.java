@@ -26,7 +26,7 @@ public class DataPeakAnalysis extends DataAnalysis {
     int peakWidth = 0;
     double peakValue = 0;
     int peakIndex = 0;
-    System.out.println();
+    // search for peaks
     for (int i = 0; i < data.length; i++) {
       switch (state) {
         case 0:
@@ -44,7 +44,7 @@ public class DataPeakAnalysis extends DataAnalysis {
           break;
         case 1:
           if (data[i] < sdHighLevel) {
-            System.out.println("High Peak Found: " + i + " " + peakArea + " " + (peakArea / sd) + " " + peakWidth + " " + peakValue + " (" + peakIndex + ")");
+            //System.out.println("High Peak Found: " + i + " " + peakArea + " " + (peakArea / sd) + " " + peakWidth + " " + peakValue + " (" + peakIndex + ")");
             if ((peakArea / sd) >= PEAK_MIN_AREARATIO && peakWidth >= PEAK_MIN_WIDTH) {
               Peak newpeak = new Peak(peakIndex, peakValue, peakArea, peakWidth);
               peakList.add(newpeak);
@@ -62,7 +62,7 @@ public class DataPeakAnalysis extends DataAnalysis {
           break;
         case 2:
           if (data[i] > sdLowLevel) {
-            System.out.println("Low Peak Found: " + i + " " + peakArea + " " + (peakArea / sd) + " " + peakWidth + " " + peakValue + " (" + peakIndex + ")");
+            //System.out.println("Low Peak Found: " + i + " " + peakArea + " " + (peakArea / sd) + " " + peakWidth + " " + peakValue + " (" + peakIndex + ")");
             if ((peakArea / sd) >= PEAK_MIN_AREARATIO && peakWidth >= PEAK_MIN_WIDTH) {
               Peak newpeak = new Peak(peakIndex, peakValue, peakArea, peakWidth);
               peakList.add(newpeak);

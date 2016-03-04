@@ -13,7 +13,10 @@ import oucomp.indoorpos.SpectralAnalysis;
 import oucomp.indoorpos.WekaHelper;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
+import weka.classifiers.evaluation.Prediction;
 import weka.classifiers.trees.J48;
+import weka.core.FastVector;
+import weka.core.Instance;
 import weka.core.Instances;
 
 public class ExperimentMultiA {
@@ -94,6 +97,9 @@ public class ExperimentMultiA {
     Evaluation evaluation = WekaHelper.run10FoldedTest(instances, classifier);
     WekaHelper.printEvaluation(evaluation);
     WekaHelper.printPCA(instances);
+    // Print predictions
+    System.out.println("THE INCORRECTLY PREDICTED CASES");
+    WekaHelper.printPredictions(evaluation, instances);
   }
 
 }

@@ -4,7 +4,10 @@ import java.util.Random;
 import weka.attributeSelection.PrincipalComponents;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
+import weka.classifiers.evaluation.Prediction;
+import weka.core.Attribute;
 import weka.core.FastVector;
+import weka.core.Instance;
 import weka.core.Instances;
 
 public class WekaHelper {
@@ -83,20 +86,45 @@ public class WekaHelper {
       ex.printStackTrace(System.err);
     }
   }
-  
+
+  public static void printPredictions(Evaluation evaluation, Instances dataset) {
+    Attribute classAttr = dataset.classAttribute();
+    StringBuilder sb = new StringBuilder();
+    sb.append(String.format("%12s %10s", "INCORRECT", "ACTUAL"));
+    for (int i = 1; i < dataset.numAttributes(); i++) {
+      sb.append(String.format("%12s", dataset.attribute(i).name()));
+    }
+    sb.append("\n");
+    FastVector predictions = evaluation.predictions();
+    for (int i = 0, trainDataSize = dataset.numInstances(); i < trainDataSize; i++) {
+      Instance instance = dataset.instance(i);
+      Prediction prediction = (Prediction) predictions.elementAt(i);
+      if (prediction.actual() != prediction.predicted()) {
+        String predictedClass = "[" + classAttr.value((int) prediction.predicted()) + "]";
+        String actualClass = classAttr.value((int) prediction.actual());
+        sb.append(String.format("%12s %10s", predictedClass, actualClass));
+        for (int j = 1; j < dataset.numAttributes(); j++) {
+          sb.append(String.format("%12.4f", instance.value(j)));
+        }
+        sb.append('\n');
+      }
+    }
+    System.out.println(sb);
+  }
+
   public static void printAttributes(Instances dataset) {
     int num = dataset.numAttributes();
     System.out.println("Number of attributes: " + num);
-    for (int i=0; i<num; i++) {
+    for (int i = 0; i < num; i++) {
       System.out.println(i + ": " + dataset.attribute(i).toString());
     }
   }
-  
+
   public static void printInstances(Instances dataset) {
     int num = dataset.numInstances();
     System.out.println("Number of instances: " + num);
-    for (int i=0; i<num; i++) {
+    for (int i = 0; i < num; i++) {
       System.out.println(i + ": " + dataset.instance(i).toString());
     }
-  }  
+  }
 }
