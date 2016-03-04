@@ -11,10 +11,10 @@ import oucomp.indoorpos.SpectralAnalysis;
 import oucomp.indoorpos.WekaHelper;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
-import weka.classifiers.functions.SMO;
+import weka.classifiers.trees.J48;
 import weka.core.Instances;
 
-public class ExperimentMultiA {
+public class ExperimentMultiB {
 
   private static AccelDatasetModel model;
 
@@ -44,17 +44,21 @@ public class ExperimentMultiA {
       System.err.println(ex);
       System.exit(1);
     }
-    Instances dataModel = FeatureSetHelper.createDataModel("IndoorPos", new String[]{"up", "down", "standstill"}, BasicFeatureSetSpectral.class);
+    Instances dataModel = FeatureSetHelper.createDataModel("IndoorPos", 
+            new String[]{"up", "down", "standstill", "stairup", "stairdown", "walking"}, BasicFeatureSetSpectral.class);
     List<BasicFeatureSet> fsAll = createFeatureSetFromData("up", model.getAccelRecordList("ElevatorUp"));
     fsAll.addAll(createFeatureSetFromData("down", model.getAccelRecordList("ElevatorDown")));
     fsAll.addAll(createFeatureSetFromData("standstill", model.getAccelRecordList("StandStill")));
+    fsAll.addAll(createFeatureSetFromData("stairup", model.getAccelRecordList("StairUp")));
+    fsAll.addAll(createFeatureSetFromData("stairdown", model.getAccelRecordList("StairDown")));    
+    fsAll.addAll(createFeatureSetFromData("walking", model.getAccelRecordList("Walking")));     
     Instances instances = FeatureSetHelper.convertToInstances(dataModel, fsAll);
     
     WekaHelper.printAttributes(dataModel);
     WekaHelper.printInstances(dataModel);
     // start training
-    //Classifier classifier = new J48();
-    Classifier classifier = new SMO();
+    Classifier classifier = new J48();
+    //Classifier classifier = new SMO();
     //Evaluation evaluation = WekaHelper.runTrainSetOnly(instances, classifier);
     //Evaluation evaluation = WekaHelper.runTrainTestSplit(instances, classifier, 0.5);
     Evaluation evaluation = WekaHelper.run10FoldedTest(instances, classifier);

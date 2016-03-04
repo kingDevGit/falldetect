@@ -2,21 +2,36 @@ package oucomp.indoorpos.exp;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import oucomp.indoorpos.DataPeakAnalysis;
 import oucomp.indoorpos.Peak;
 import oucomp.indoorpos.SpectralAnalysis;
 
 public class BasicFeatureSetSpectral extends BasicFeatureSet {
 
+  // peaks
   public double fewpeaks;
+  public double somepeaks;  
+  public double manypeaks;
   public double maxbeforemin;
+  public double highpeakmean;
+  public double lowpeakmean;
+  // spectral
   public double peak05spec; // peak < 0.5 in spectral graph
 
   public BasicFeatureSetSpectral(String classLabel) {
     super(classLabel);
   }
 
-  public void evaluatePeakFeatures(List<Peak> highPeakList, List<Peak> lowPeakList) {
-    fewpeaks = (lowPeakList.size() + highPeakList.size() <= 5) ? 1 : 0;
+  public void evaluatePeakFeatures(DataPeakAnalysis dp) {
+    List<Peak> highPeakList = dp.getHighPeakList();
+    List<Peak> lowPeakList = dp.getLowPeakList();
+    highpeakmean = dp.getHighPeakValueMean();
+    lowpeakmean = dp.getLowPeakValueMean();
+    
+    int peakcount = lowPeakList.size() + highPeakList.size();
+    fewpeaks = (peakcount > 0 && peakcount <= 5) ? 1 : 0;
+    somepeaks = (peakcount >= 6 && peakcount <= 10) ? 1 : 0;
+    manypeaks = (peakcount > 10) ? 1 : 0;    
     int bestHighPeakIndex = -1;
     int bestLowPeakIndex = -1;
     // find the index of the lowest low-peak and the highest high-peak
@@ -49,7 +64,7 @@ public class BasicFeatureSetSpectral extends BasicFeatureSet {
       if (freq > 0.5) {
         break;
       }
-      if (freq > 0.1 && freq < 0.5 && strength > 15 && strength < 30) {
+      if (freq > 0.1 && freq < 0.5 && strength > 10 && strength < 30) {
         peak05spec = 1;
         break;
       }

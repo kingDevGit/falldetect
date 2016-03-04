@@ -22,7 +22,7 @@ public class ExperimentBinaryC {
     BasicFeatureSetSpectral fs = new BasicFeatureSetSpectral(classLabel);
     DataPeakAnalysis da = new DataPeakAnalysis(rec.getRMSArray());
     fs.evaluateBasicData(da.getMean(), da.getVariance(), da.getSkewness(), da.getMax(), da.getMin());
-    fs.evaluatePeakFeatures(da.getHighPeakList(), da.getLowPeakList());    
+    fs.evaluatePeakFeatures(da);    
     
     SpectralAnalysis sa = new SpectralAnalysis(rec.getRMSArray(), rec.getSampleCount(), rec.getSampleRate());
     fs.evaluateSpectral(sa);
