@@ -3,12 +3,10 @@ package oucomp.indoorpos.exp;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import oucomp.indoorpos.AccelDatasetModel;
 import oucomp.indoorpos.AccelRecord;
 import oucomp.indoorpos.DataPeakAnalysis;
-import oucomp.indoorpos.Peak;
 import oucomp.indoorpos.SpectralAnalysis;
 import oucomp.indoorpos.WekaHelper;
 import weka.classifiers.Classifier;
@@ -23,41 +21,11 @@ public class ExperimentBinaryC {
   private static BasicFeatureSetSpectral createFeatureFromData(String classLabel, AccelRecord rec) {
     BasicFeatureSetSpectral fs = new BasicFeatureSetSpectral(classLabel);
     DataPeakAnalysis da = new DataPeakAnalysis(rec.getRMSArray());
-    rec.putExtra("SIMPLEDA", da);
-
-    fs.max = da.getMax();
-    fs.min = da.getMin();
-    fs.mean = da.getMean();
-    fs.skewness = da.getSkewness();
-    fs.variance = da.getVariance();
-
-    fs.peak05spec = 0;
-    SpectralAnalysis sa = new SpectralAnalysis(rec.getRMSArray(), rec.getSampleCount(), rec.getSampleRate());
-    rec.putExtra("SPECTRAL", sa);
-    LinkedHashMap<Double, Double> spikeMap = sa.getSpikeMap();
-    for (Double freq: spikeMap.keySet()) {
-      Double strength = spikeMap.get(freq);
-      if (freq > 0.5)
-        break;
-      if (freq > 0.1 && freq < 0.5 && strength > 15 && strength < 30) {
-         fs.peak05spec = 1;
-         break;
-      }
-    }
-    fs.maxbeforemin = 1; // true: high peak before low peak
-    List<Peak> highpeak = da.getHighPeakList();
-    List<Peak> lowpeak = da.getLowPeakList();
-    if (highpeak.size() == 1 && lowpeak.size() == 1) {
-      fs.twopeaks = 1;
-      Peak hp = highpeak.get(0);
-      Peak lp = lowpeak.get(0);
-      if (lp.getIndex() < hp.getIndex()) {
-        fs.maxbeforemin = 0;
-      }
-    } else {
-      fs.twopeaks = 0;
-    }
+    fs.evaluateBasicData(da.getMean(), da.getVariance(), da.getSkewness(), da.getMax(), da.getMin());
+    fs.evaluatePeakFeatures(da.getHighPeakList(), da.getLowPeakList());    
     
+    SpectralAnalysis sa = new SpectralAnalysis(rec.getRMSArray(), rec.getSampleCount(), rec.getSampleRate());
+    fs.evaluateSpectral(sa);
     return fs;
   }
 
@@ -87,10 +55,12 @@ public class ExperimentBinaryC {
     //Evaluation evaluation = WekaHelper.runTrainSetOnly(instances, classifier);
     //Evaluation evaluation = WekaHelper.runTrainTestSplit(instances, classifier, 0.5);
     Evaluation evaluation = WekaHelper.run10FoldedTest(instances, classifier);
-    
-    
+
     WekaHelper.printEvaluation(evaluation);
     WekaHelper.printPCA(instances);
+    // Print incorrect predictions
+    System.out.println("THE INCORRECTLY PREDICTED CASES");
+    WekaHelper.printPredictions(evaluation, instances);
   }
 
 }

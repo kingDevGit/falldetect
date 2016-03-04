@@ -11,5 +11,13 @@ public class BasicFeatureSet extends FeatureSet {
   public BasicFeatureSet(String classLabel) {
     super(classLabel);
   }
+  
+  public void evaluateBasicData(double mean, double variance, double skewness, double max, double min) {
+    this.mean = mean;
+    this.variance = variance;
+    this.skewness = skewness;
+    this.max = max;
+    this.min = min;
+  }
 
 }

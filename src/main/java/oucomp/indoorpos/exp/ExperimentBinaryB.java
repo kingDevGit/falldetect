@@ -8,6 +8,7 @@ import java.util.List;
 import oucomp.indoorpos.AccelDatasetModel;
 import oucomp.indoorpos.AccelRecord;
 import oucomp.indoorpos.DataAnalysis;
+import oucomp.indoorpos.DataPeakAnalysis;
 import oucomp.indoorpos.SpectralAnalysis;
 import oucomp.indoorpos.WekaHelper;
 import weka.classifiers.Classifier;
@@ -22,27 +23,10 @@ public class ExperimentBinaryB {
   private static BasicFeatureSetSpectral createFeatureFromData(String classLabel, AccelRecord rec) {
     BasicFeatureSetSpectral fs = new BasicFeatureSetSpectral(classLabel);
     DataAnalysis da = new DataAnalysis(rec.getRMSArray());
-    rec.putExtra("SIMPLEDA", da);
-
-    fs.max = da.getMax();
-    fs.min = da.getMin();
-    fs.mean = da.getMean();
-    fs.skewness = da.getSkewness();
-    fs.variance = da.getVariance();
-
-    fs.peak05spec = 0;
+    fs.evaluateBasicData(da.getMean(), da.getVariance(), da.getSkewness(), da.getMax(), da.getMin());
+    
     SpectralAnalysis sa = new SpectralAnalysis(rec.getRMSArray(), rec.getSampleCount(), rec.getSampleRate());
-    rec.putExtra("SPECTRAL", sa);
-    LinkedHashMap<Double, Double> spikeMap = sa.getSpikeMap();
-    for (Double freq: spikeMap.keySet()) {
-      Double strength = spikeMap.get(freq);
-      if (freq > 0.5)
-        break;
-      if (freq > 0.1 && freq < 0.5 && strength > 15 && strength < 30) {
-         fs.peak05spec = 1;
-         break;
-      }
-    }
+    fs.evaluateSpectral(sa);
     return fs;
   }
 
@@ -74,6 +58,9 @@ public class ExperimentBinaryB {
     Evaluation evaluation = WekaHelper.run10FoldedTest(instances, classifier);
     WekaHelper.printEvaluation(evaluation);
     WekaHelper.printPCA(instances);
+    // Print incorrect predictions
+    System.out.println("THE INCORRECTLY PREDICTED CASES");
+    WekaHelper.printPredictions(evaluation, instances);
   }
 
 }

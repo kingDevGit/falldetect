@@ -18,15 +18,9 @@ public class ExperimentBinaryA {
   private static AccelDatasetModel model;
 
   private static BasicFeatureSet createFeatureFromData(String classLabel, AccelRecord rec) {
-    DataAnalysis da = new DataAnalysis(rec.getRMSArray());
-    rec.putExtra("SIMPLEDA", da);
-
     BasicFeatureSet fs = new BasicFeatureSet(classLabel);
-    fs.max = da.getMax();
-    fs.min = da.getMin();
-    fs.mean = da.getMean();
-    fs.skewness = da.getSkewness();
-    fs.variance = da.getVariance();
+    DataAnalysis da = new DataAnalysis(rec.getRMSArray());
+    fs.evaluateBasicData(da.getMean(), da.getVariance(), da.getSkewness(), da.getMax(), da.getMin());
     return fs;
   }
 
@@ -47,7 +41,6 @@ public class ExperimentBinaryA {
     }
     Instances dataModel = FeatureSetHelper.createDataModel("IndoorPos", new String[]{"push", "pull"}, BasicFeatureSet.class);
     
-    
     List<BasicFeatureSet> fsAll = createFeatureSetFromData("push", model.getAccelRecordList("DoorPush"));
     fsAll.addAll(createFeatureSetFromData("pull", model.getAccelRecordList("DoorPull")));
     
@@ -61,6 +54,9 @@ public class ExperimentBinaryA {
     Evaluation evaluation = WekaHelper.run10FoldedTest(instances, classifier);
     WekaHelper.printEvaluation(evaluation);
     WekaHelper.printPCA(instances);
+    // Print incorrect predictions
+    System.out.println("THE INCORRECTLY PREDICTED CASES");
+    WekaHelper.printPredictions(evaluation, instances);
   }
 
 }
