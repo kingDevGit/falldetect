@@ -25,7 +25,7 @@ public class ExperimentMultiA {
     DataPeakAnalysis da = new DataPeakAnalysis(rec.getRMSArray());
     rec.putExtra("SIMPLEDA", da);
 
-    fs.max = da.getMin();
+    fs.max = da.getMax();
     fs.min = da.getMin();
     fs.mean = da.getMean();
     fs.skewness = da.getSkewness();
