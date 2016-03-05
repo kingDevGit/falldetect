@@ -56,9 +56,11 @@ public class PlotRecordPanel extends javax.swing.JPanel {
       // create rms subplot
       rmsSeriesCollection = new XYSeriesCollection();
       rmsPlot = new XYPlot(rmsSeriesCollection, null, new NumberAxis("RMS (g)"), new StandardXYItemRenderer());
+      rmsPlot.getRenderer().setSeriesPaint(0, Color.RED);
+      rmsPlot.getRenderer().setSeriesPaint(1, Color.CYAN);      
       rmsPlot.getRangeAxis().setRange(0, 3.5);
       rmsPlot.setRangeAxisLocation(AxisLocation.BOTTOM_OR_LEFT);
-      thePlot.add(rmsPlot, 1);
+      thePlot.add(rmsPlot, 1); 
       // create chart
       theChart = new JFreeChart("Fall DataSet",
               JFreeChart.DEFAULT_TITLE_FONT,
@@ -93,6 +95,13 @@ public class PlotRecordPanel extends javax.swing.JPanel {
       rmsSeries.add(j * samplePeriod, rms[j]);
     }
     rmsSeriesCollection.addSeries(rmsSeries);
+    
+    double vel[] = record.getVelocityArray();
+    XYSeries velSeries = new XYSeries("Velocity (m/s)");
+    for (int j = 0; j < vel.length; j++) {
+      velSeries.add(j * samplePeriod, vel[j]);
+    }
+    rmsSeriesCollection.addSeries(velSeries);    
   }
 
   public void setAccelRecord(AccelRecord record) {

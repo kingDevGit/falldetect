@@ -87,10 +87,16 @@ public class AccelRecord {
       evaluateRMS();
     }
     velocity = new double[sample.length];
+    double vx, vy, vz, g;
+    vx = vy = vz = 0;
     velocity[0] = 0;
     double samplePeriod = 1 / sampleRate;
     for (int i = 1; i < sampleCount; i++) {
-      velocity[i] = velocity[i - 1] + (rms[i - 1] - 1) * samplePeriod;
+      vx += (sample[i][0] - sample[i-1][0]) * samplePeriod;
+      vy += (sample[i][1] - sample[i-1][1]) * samplePeriod;
+      vz += (sample[i][2] - sample[i-1][2]) * samplePeriod;
+      double accel = vx * vx + vy * vy + vz * vz;
+      velocity[i] = (accel >= 0)? Math.sqrt(accel) : 0;
     }
   }
 

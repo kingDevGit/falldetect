@@ -40,7 +40,8 @@ public class WekaHelper {
     classifier.buildClassifier(trainSet);
     System.out.println(classifier);
     eval.evaluateModel(classifier, testSet);
-
+    System.out.println("INCORRECT PREDICTIONS");
+    printPredictions(eval, testSet);
     return eval;
   }
 
@@ -50,14 +51,14 @@ public class WekaHelper {
     //randset.randomize(new Random(10));
     //randset.stratify(10);
     //printInstances(randset);
-    
+
     Evaluation eval = new Evaluation(randset);
     classifier.buildClassifier(randset);
     System.out.println(classifier);
     weka.core.Range attsToOutput = null;
     Boolean outputDistribution = new Boolean(true);
     StringBuffer predsBuffer = new StringBuffer();
-    
+
     eval.crossValidateModel(classifier, randset, 10, new Random(10), forPredictionsPrinting, attsToOutput, outputDistribution);
     System.out.println(forPredictionsPrinting);
     return eval;
