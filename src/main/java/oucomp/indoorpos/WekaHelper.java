@@ -90,8 +90,8 @@ public class WekaHelper {
     }
   }
 
+  // must be the same dataset as used in the classification
   public static void printPredictions(Evaluation evaluation, Instances dataset) {
-    
     Attribute classAttr = dataset.classAttribute();
     StringBuilder sb = new StringBuilder();
     sb.append(String.format("%12s %10s", "INCORRECT", "ACTUAL"));

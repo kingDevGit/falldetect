@@ -50,17 +50,21 @@ public class ExperimentBinaryC {
     Instances instances = FeatureSetHelper.convertToInstances(dataModel, fsAll);
 
     // start training
-    Classifier classifier = new J48();
-    //Classifier classifier = new SMO();
+    //Classifier classifier = new weka.classifiers.trees.Id3();
+    Classifier classifier = new weka.classifiers.trees.J48();
+    //Classifier classifier = new weka.classifiers.functions.LinearRegression();
+    //Classifier classifier = new weka.classifiers.functions.RBFNetwork();
+    //Classifier classifier = new weka.classifiers.functions.SMO();
+    //Classifier classifier = new weka.classifiers.bayes.NaiveBayes();
+    //Classifier classifier = new weka.classifiers.bayes.BayesNet();
+    //Classifier classifier = new weka.classifiers.functions.MultilayerPerceptron();
+    
     //Evaluation evaluation = WekaHelper.runTrainSetOnly(instances, classifier);
     //Evaluation evaluation = WekaHelper.runTrainTestSplit(instances, classifier, 0.5);
     Evaluation evaluation = WekaHelper.run10FoldedTest(instances, classifier);
 
     WekaHelper.printEvaluation(evaluation);
     WekaHelper.printPCA(instances);
-    // Print incorrect predictions
-    //System.out.println("THE INCORRECTLY PREDICTED CASES");
-    //WekaHelper.printPredictions(evaluation, instances);
   }
 
 }
