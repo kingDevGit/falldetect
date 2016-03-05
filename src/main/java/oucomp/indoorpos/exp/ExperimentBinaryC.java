@@ -11,7 +11,6 @@ import oucomp.indoorpos.SpectralAnalysis;
 import oucomp.indoorpos.WekaHelper;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
-import weka.classifiers.trees.J48;
 import weka.core.Instances;
 
 public class ExperimentBinaryC {
@@ -45,8 +44,8 @@ public class ExperimentBinaryC {
       System.exit(1);
     }
     Instances dataModel = FeatureSetHelper.createDataModel("IndoorPos", new String[]{"down", "up"}, BasicFeatureSetSpectral.class);
-    List<BasicFeatureSetSpectral> fsAll = createFeatureSetFromData("down", model.getAccelRecordList("ElevatorDown"));
-    fsAll.addAll(createFeatureSetFromData("up", model.getAccelRecordList("ElevatorUp")));
+    List<BasicFeatureSetSpectral> fsAll = createFeatureSetFromData("down", model.getAccelRecordList("StairDown"));
+    fsAll.addAll(createFeatureSetFromData("up", model.getAccelRecordList("StairUp")));
     Instances instances = FeatureSetHelper.convertToInstances(dataModel, fsAll);
 
     // start training
