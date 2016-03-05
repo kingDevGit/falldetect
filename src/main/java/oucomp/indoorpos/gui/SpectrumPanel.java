@@ -20,6 +20,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 import oucomp.indoorpos.AccelRecord;
 
 public class SpectrumPanel extends javax.swing.JPanel {
+
   // charting variable
   protected CombinedDomainXYPlot thePlot = null;
   protected XYPlot dataPlot;
@@ -42,6 +43,7 @@ public class SpectrumPanel extends javax.swing.JPanel {
       dataSeriesCollection = new XYSeriesCollection();
       dataPlot = new XYPlot(dataSeriesCollection, null, new NumberAxis("Strength"), new StandardXYItemRenderer());
       dataPlot.getRenderer().setSeriesPaint(0, Color.BLACK);
+      dataPlot.getRenderer().setSeriesPaint(1, Color.YELLOW);
       dataPlot.setRangeAxisLocation(AxisLocation.BOTTOM_OR_LEFT);
       dataPlot.getRangeAxis().setRange(0, 25);
       thePlot.add(dataPlot, 1);
@@ -55,20 +57,27 @@ public class SpectrumPanel extends javax.swing.JPanel {
     }
   }
 
-  public void setData(double sample[][]) {
-    if (sample == null || sample.length == 0) {
+  public void setData(double sample[][], double mean[]) {
+    if (sample == null || sample[0].length == 0) {
       return;
     }
     dataSeriesCollection.removeAllSeries();
     XYSeries dataSeries = new XYSeries("Frequency Spectral");
-    for (int j = 0; j < sample.length; j++) {
+    for (int j = 0; j < sample[0].length; j++) {
       // skip the DC frequency = 0 point
-      if (sample[j][0] > 0)
-      dataSeries.add(sample[j][0], sample[j][1]);
+      if (sample[0][j] > 0) {
+        dataSeries.add(sample[0][j], sample[1][j]);
+      }
     }
     dataPlot.getRangeAxis().setAutoRange(true);
     dataPlot.getDomainAxis().setRange(0, 10);
     dataSeriesCollection.addSeries(dataSeries);
+    // mean
+    XYSeries mSeries = new XYSeries("Mean");
+    for (int j = 0; j < mean.length; j++) {
+      mSeries.add(sample[0][j], mean[j]);
+    }
+    dataSeriesCollection.addSeries(mSeries);
   }
 
   /**

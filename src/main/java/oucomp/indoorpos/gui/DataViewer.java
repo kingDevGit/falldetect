@@ -181,7 +181,7 @@ public class DataViewer extends javax.swing.JFrame {
       spectralData = (SpectralAnalysis) record.getExtra("SPECTRAL");
     }
     double freqSpectrum[][] = spectralData.getSpectrum();
-    spectrumPanel1.setData(freqSpectrum);
+    spectrumPanel1.setData(freqSpectrum, spectralData.getMeanArray());
     // update data analysis panel
     DataPeakAnalysis stat;
     if (!record.containExtra("SIMPLEDA")) {

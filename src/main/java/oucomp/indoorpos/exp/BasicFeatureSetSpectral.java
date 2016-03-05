@@ -64,7 +64,7 @@ public class BasicFeatureSetSpectral extends BasicFeatureSet {
       if (freq > 0.5) {
         break;
       }
-      if (freq > 0.1 && freq < 0.5 && strength > 10 && strength < 30) {
+      if (freq > 0.05 && freq < 0.5 && strength >= 8 && strength <= 30) {
         peak05spec = 1;
         break;
       }

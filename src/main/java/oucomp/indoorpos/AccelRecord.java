@@ -3,7 +3,6 @@ package oucomp.indoorpos;
 import java.util.HashMap;
 
 public class AccelRecord {
-
   protected String recordClass = null;
   protected String recordLabel = null;
   protected double sample[][] = null;
