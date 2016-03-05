@@ -10,6 +10,7 @@ import org.apache.commons.math3.complex.Complex;
 import org.apache.commons.math3.transform.DftNormalization;
 import org.apache.commons.math3.transform.FastFourierTransformer;
 import org.apache.commons.math3.transform.TransformType;
+import oucomp.indoorpos.exp.BasicFeatureSetSpectral;
 
 public class SpectralAnalysis {
 
@@ -141,6 +142,8 @@ public class SpectralAnalysis {
     while (it.hasNext()) {
       Double freq = it.next();
       Double amplitude = spikeMap.get(freq);
+      if (freq > 1)
+        continue;
       sb.append("Spike ").append(i).append(": ").append(freq).append(" Hz ");
       sb.append("(").append(amplitude).append(")\n");
       i++;
@@ -176,6 +179,9 @@ public class SpectralAnalysis {
       System.out.println(record.getRecordLabel());
       SpectralAnalysis sa = new SpectralAnalysis(record.getRMSArray(), record.getSampleCount(), record.getSampleRate());
       sa.printSpikes();
+      BasicFeatureSetSpectral fs = new BasicFeatureSetSpectral(record.getRecordLabel());
+      fs.evaluateSpectral(sa);
+      //System.out.println("peak05spec = " + fs.peak05spec);
     }
   }
 }

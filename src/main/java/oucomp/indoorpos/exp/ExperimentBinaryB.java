@@ -59,8 +59,8 @@ public class ExperimentBinaryB {
     WekaHelper.printEvaluation(evaluation);
     WekaHelper.printPCA(instances);
     // Print incorrect predictions
-    System.out.println("THE INCORRECTLY PREDICTED CASES");
-    WekaHelper.printPredictions(evaluation, instances);
+    //System.out.println("THE INCORRECTLY PREDICTED CASES");
+    //WekaHelper.printPredictions(evaluation, instances);
   }
 
 }

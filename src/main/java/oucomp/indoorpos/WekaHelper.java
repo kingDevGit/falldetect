@@ -45,15 +45,18 @@ public class WekaHelper {
   }
 
   public static Evaluation run10FoldedTest(Instances dataset, Classifier classifier) throws Exception {
-
     Instances randset = new Instances(dataset);
+    StringBuffer forPredictionsPrinting = new StringBuffer();
     //randset.randomize(new Random(10));
     //randset.stratify(10);
     //printInstances(randset);
     Evaluation eval = new Evaluation(randset);
     classifier.buildClassifier(randset);
     System.out.println(classifier);
-    eval.crossValidateModel(classifier, randset, 10, new Random(10));
+    weka.core.Range attsToOutput = null;
+    Boolean outputDistribution = new Boolean(true);
+    eval.crossValidateModel(classifier, randset, 10, new Random(10), forPredictionsPrinting, attsToOutput, outputDistribution);
+    System.out.println(forPredictionsPrinting);
     return eval;
   }
 
@@ -88,6 +91,7 @@ public class WekaHelper {
   }
 
   public static void printPredictions(Evaluation evaluation, Instances dataset) {
+    
     Attribute classAttr = dataset.classAttribute();
     StringBuilder sb = new StringBuilder();
     sb.append(String.format("%12s %10s", "INCORRECT", "ACTUAL"));
@@ -97,8 +101,10 @@ public class WekaHelper {
     sb.append("\n");
     FastVector predictions = evaluation.predictions();
     for (int i = 0, trainDataSize = dataset.numInstances(); i < trainDataSize; i++) {
+
       Instance instance = dataset.instance(i);
       Prediction prediction = (Prediction) predictions.elementAt(i);
+
       if (prediction.actual() != prediction.predicted()) {
         String predictedClass = "[" + classAttr.value((int) prediction.predicted()) + "]";
         String actualClass = classAttr.value((int) prediction.actual());
