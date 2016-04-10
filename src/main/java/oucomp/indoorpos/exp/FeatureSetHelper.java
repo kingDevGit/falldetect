@@ -27,9 +27,18 @@ public class FeatureSetHelper {
   }
 
   public static Instance createInstance(Instances dataModel, String classLabel, Object theFeatureObject) {
+    return createInstance(false, dataModel, classLabel, theFeatureObject);
+  }
 
+  public static Instance createTestInstance(Instances dataModel, Object theFeatureObject) {
+    return createInstance(true, dataModel, "", theFeatureObject);
+  }
+
+  public static Instance createInstance(boolean testInstance, Instances dataModel, String classLabel, Object theFeatureObject) {
     Instance instance = new Instance(dataModel.numAttributes());
-    instance.setValue((Attribute) dataModel.attribute(0), classLabel);
+    if (!testInstance) {
+      instance.setValue((Attribute) dataModel.attribute(0), classLabel);
+    }
     // using reflections to access the instance variables which are features
     for (int i = 1; i < dataModel.numAttributes(); i++) {
       String featureName = dataModel.attribute(i).name();
@@ -44,16 +53,16 @@ public class FeatureSetHelper {
         ex.printStackTrace(System.err);
       }
     }
+    instance.setDataset(dataModel);
     return instance;
   }
-  
-    public static Instances convertToInstances(Instances dataModel, List<? extends FeatureSet> featureSetList) {
+
+  public static Instances convertToInstances(Instances dataModel, List<? extends FeatureSet> featureSetList) {
     for (FeatureSet fs : featureSetList) {
       dataModel.add(FeatureSetHelper.createInstance(dataModel, fs.classLabel, fs));
     }
     return dataModel;
   }
-
 
   public static void printAttributes(Instances dataModel) {
     System.out.println("Num Attributes = " + dataModel.numAttributes());
