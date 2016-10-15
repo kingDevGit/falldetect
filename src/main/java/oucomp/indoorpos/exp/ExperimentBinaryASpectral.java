@@ -11,11 +11,9 @@ import oucomp.indoorpos.SpectralAnalysis;
 import oucomp.indoorpos.WekaHelper;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
-import weka.classifiers.bayes.NaiveBayes;
-import weka.classifiers.trees.J48;
 import weka.core.Instances;
 
-public class ExperimentMultiB {
+public class ExperimentBinaryASpectral {
 
   private static AccelDatasetModel model;
 
@@ -30,8 +28,8 @@ public class ExperimentMultiB {
     return fs;
   }
 
-  private static List<BasicFeatureSet> createFeatureSetFromData(String classLabel, List<AccelRecord> recList) {
-    List<BasicFeatureSet> result = new ArrayList();
+  private static List<BasicFeatureSetSpectral> createFeatureSetFromData(String classLabel, List<AccelRecord> recList) {
+    List<BasicFeatureSetSpectral> result = new ArrayList();
     for (AccelRecord rec : recList) {
       result.add(createFeatureFromData(classLabel, rec));
     }
@@ -45,33 +43,31 @@ public class ExperimentMultiB {
       System.err.println(ex);
       System.exit(1);
     }
-    Instances dataModel = FeatureSetHelper.createDataModel("IndoorPos", 
-            new String[]{"elevator-up", "elevator-down", "standing", "stair-up", "stair-down", "walking", "door-push", "door-pull"}, BasicFeatureSetSpectral.class);
-    List<BasicFeatureSet> fsAll = createFeatureSetFromData("elevator-up", model.getAccelRecordList("ElevatorUp"));
-    fsAll.addAll(createFeatureSetFromData("elevator-down", model.getAccelRecordList("ElevatorDown")));
-    fsAll.addAll(createFeatureSetFromData("standing", model.getAccelRecordList("StandStill")));
-    fsAll.addAll(createFeatureSetFromData("stair-up", model.getAccelRecordList("StairUp")));
-    fsAll.addAll(createFeatureSetFromData("stair-down", model.getAccelRecordList("StairDown")));    
-    fsAll.addAll(createFeatureSetFromData("walking", model.getAccelRecordList("Walking")));
-    fsAll.addAll(createFeatureSetFromData("door-push", model.getAccelRecordList("DoorPush")));    
-    fsAll.addAll(createFeatureSetFromData("door-pull", model.getAccelRecordList("DoorPull")));    
+    Instances dataModel = FeatureSetHelper.createDataModel("IndoorPos", new String[]{"push", "pull"}, BasicFeatureSetSpectral.class);
+    List<BasicFeatureSetSpectral> fsAll = createFeatureSetFromData("push", model.getAccelRecordList("DoorPush"));
+    fsAll.addAll(createFeatureSetFromData("pull", model.getAccelRecordList("DoorPull")));
     Instances instances = FeatureSetHelper.convertToInstances(dataModel, fsAll);
-    
-    WekaHelper.printAttributes(dataModel);
-    WekaHelper.printInstances(dataModel);
+
     // start training
     //Classifier classifier = new weka.classifiers.trees.Id3();
-    //Classifier classifier = new weka.classifiers.trees.J48();
+    Classifier classifier = new weka.classifiers.trees.J48();
     //Classifier classifier = new weka.classifiers.functions.LinearRegression();
     //Classifier classifier = new weka.classifiers.functions.RBFNetwork();
     //Classifier classifier = new weka.classifiers.functions.SMO();
     //Classifier classifier = new weka.classifiers.bayes.NaiveBayes();
     //Classifier classifier = new weka.classifiers.bayes.BayesNet();
-    Classifier classifier = new weka.classifiers.functions.MultilayerPerceptron();
+    //Classifier classifier = new weka.classifiers.functions.MultilayerPerceptron();
+    
     //Evaluation evaluation = WekaHelper.runTrainSetOnly(instances, classifier);
     //Evaluation evaluation = WekaHelper.runTrainTestSplit(instances, classifier, 0.5);
     Evaluation evaluation = WekaHelper.run10FoldedTest(instances, classifier);
+
     WekaHelper.printEvaluation(evaluation);
+    WekaHelper.printPCA(instances);
+    // Test with split
+    System.out.println("TEST WITH SPLIT PARTS");
+    WekaHelper.runTrainTestSplit(instances, classifier, 0.8);
+    WekaHelper.printEvaluation(evaluation);   
     WekaHelper.printPCA(instances);
   }
 

@@ -17,6 +17,7 @@ public class BasicFeatureSetSpectral extends BasicFeatureSet {
   public double lowpeakmean;
   // spectral
   public double peak05spec; // peak < 0.5 in spectral graph
+  public double twinpeak; // twin peak between 0.5 Hz and 2.1 Hz
 
   public BasicFeatureSetSpectral(String classLabel) {
     super(classLabel);
@@ -58,16 +59,25 @@ public class BasicFeatureSetSpectral extends BasicFeatureSet {
 
   public void evaluateSpectral(SpectralAnalysis sa) {
     peak05spec = 0;
+    twinpeak = 0;
+    int countTwin = 0;
     LinkedHashMap<Double, Double> spikeMap = sa.getSpikeMap();
     for (Double freq : spikeMap.keySet()) {
       Double strength = spikeMap.get(freq);
+      //System.out.println(freq + ":" + strength);
       if (freq > 0.5) {
-        break;
+        //break;
       }
       if (freq > 0.05 && freq < 0.5 && strength >= 8 && strength <= 30) {
         peak05spec = 1;
-        break;
+        //break;
       }
+      if (freq >= 0.5 && freq <= 3.0 && strength >= 2 && strength <= 20) {
+        countTwin++;
+      }
+    }
+    if (countTwin >= 2) {
+      twinpeak = countTwin;
     }
   }
 }

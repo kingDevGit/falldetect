@@ -68,6 +68,7 @@ public class ExperimentBinaryC {
     System.out.println("TEST WITH SPLIT PARTS");
     WekaHelper.runTrainTestSplit(instances, classifier, 0.8);
     WekaHelper.printEvaluation(evaluation);   
+    WekaHelper.printPCA(instances);
   }
 
 }

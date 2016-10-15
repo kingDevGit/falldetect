@@ -39,8 +39,8 @@ public class ExperimentBinaryA {
       System.err.println(ex);
       System.exit(1);
     }
-    Instances dataModel = FeatureSetHelper.createDataModel("IndoorPos", new String[]{"push", "pull"}, BasicFeatureSet.class);
     
+    Instances dataModel = FeatureSetHelper.createDataModel("IndoorPos", new String[]{"push", "pull"}, BasicFeatureSet.class); 
     List<BasicFeatureSet> fsAll = createFeatureSetFromData("push", model.getAccelRecordList("DoorPush"));
     fsAll.addAll(createFeatureSetFromData("pull", model.getAccelRecordList("DoorPull")));
     

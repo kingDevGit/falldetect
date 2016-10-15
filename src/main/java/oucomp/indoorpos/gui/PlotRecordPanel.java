@@ -95,13 +95,14 @@ public class PlotRecordPanel extends javax.swing.JPanel {
       rmsSeries.add(j * samplePeriod, rms[j]);
     }
     rmsSeriesCollection.addSeries(rmsSeries);
-    
+    /*
     double vel[] = record.getVelocityArray();
     XYSeries velSeries = new XYSeries("Velocity (m/s)");
     for (int j = 0; j < vel.length; j++) {
       velSeries.add(j * samplePeriod, vel[j]);
     }
-    rmsSeriesCollection.addSeries(velSeries);    
+    rmsSeriesCollection.addSeries(velSeries); 
+    */
   }
 
   public void setAccelRecord(AccelRecord record) {
